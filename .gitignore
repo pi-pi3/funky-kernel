@@ -1,0 +1,4 @@
+.*.sw?
+target/
+isofiles/
+funky.iso

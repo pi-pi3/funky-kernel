@@ -29,7 +29,8 @@ else
 $(error invalid arch \"$(ARCH)\")
 endif
 
-CFLAGS+=-Wall -Wextra -nostdlib -ffreestanding -m$(BITS) --std=c99
+CFLAGS+=-Wall -Wextra -nostdlib -ffreestanding -m$(BITS) --std=c99 \
+		-fstack-protector-strong
 CXXFLAGS+=
 ASFLAGS+=-f $(EXEFORMAT) 
 LDFLAGS+=-n -T $(LINKER) -m $(LDEMU)

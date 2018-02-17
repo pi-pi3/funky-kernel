@@ -26,6 +26,16 @@ static char *err_msg[] = {
     "explicit panic\n",
 };
 
+// a simple stack smashing guard copied from osdevb
+#if UINT32_MAX == UINTPTR_MAX
+#define STACK_CHK_GUARD 0xe2dee396
+#else
+#define STACK_CHK_GUARD 0x595e9fbd94fda766
+#endif
+
+static volatile uintptr_t __stack_chk_guard = STACK_CHK_GUARD;
+void __stack_chk_fail(); 
+
 void log_ok(const char *msg);
 void log_info(const char *msg);
 void log_err(const char *msg);
@@ -79,6 +89,14 @@ __attribute__((__noreturn__))
 void abort() {
     vga_setfg(RED);
     vga_print("kernel panic: abort()\n");
+    vga_flush();
+    halt();
+}
+
+__attribute__((__noreturn__))
+void __stack_chk_fail() {
+    vga_setfg(RED);
+    log_err("kernel panic: stack smashed\n");
     vga_flush();
     halt();
 }

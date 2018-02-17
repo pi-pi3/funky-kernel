@@ -2,3 +2,5 @@
 target/
 isofiles/
 funky.iso
+lib/crtbegin.o
+lib/crtend.o

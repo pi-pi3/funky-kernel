@@ -9,7 +9,7 @@ SRC+=$(CXX_SRC) $(C_SRC) $(ASM_SRC)
 OBJ+=$(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.cpp.o,$(CXX_SRC)) \
  	$(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.c.o,$(C_SRC)) \
 	$(patsubst arch/$(ARCH)/%.asm,$(OBJDIR)/%.asm.o,$(ASM_SRC))
-LIB+=
+LIB+=$(LIBDIR)/crtbegin.o $(LIBDIR)/crtend.o
 IMAGE:=funky.iso
 ISO:=isofiles
 
@@ -24,6 +24,9 @@ $(IMAGE): $(BUILD) $(OBJDIR) $(ISO) $(GRUB) $(KERNEL)
 	$(RUN) cp grub.cfg $(ISO)/boot/grub/
 	$(RUN) cp $(KERNEL) $(ISO)/boot/
 	$(RUN) grub-mkrescue -o $(IMAGE) $(ISO)
+
+$(LIBDIR)/crtbegin.o $(LIBDIR)/crtend.o:
+	$(RUN) OBJ=`$(CC) $(CFLAGS) -print-file-name=$(@F)` && cp "$$OBJ" $@
 
 $(OBJDIR)/%.cpp.o: $(SRCDIR)/%.cpp
 	$(RUN) $(CXX) $(CXXLAGS) $(INCLUDE) -c -o $@ $^
@@ -49,6 +52,8 @@ $(ISO):
 clean:
 	$(RUN) rm -rf target
 	$(RUN) rm -rf $(ISO)
+	$(RUN) rm -f $(LIBDIR)/crtbegin.o
+	$(RUN) rm -f $(LIBDIR)/crtend.o
 
 mrproper: clean
 	$(RUN) rm -f $(IMAGE)

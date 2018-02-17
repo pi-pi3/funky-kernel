@@ -113,7 +113,7 @@ void vga_putchar(int c) {
             prev_char();
             break;
         case '\n':
-            linefeed();
+            linefeed(); __attribute__ ((fallthrough));
         case '\r':
             carret();
             break;

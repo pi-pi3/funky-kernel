@@ -9,8 +9,8 @@
 #define TRY_INIT(msg, expr) \
     log_info(msg); \
     if ((err = (expr))) { \
-        log_err(err_msg[err]); \
-        return; \
+        log_err(err_msg[err & 0xff]); \
+        abort(); \
     } else { \
         log_ok("[OK]\n"); \
     }
@@ -22,12 +22,16 @@ static char *err_msg[] = {
     "no error\n",
     "invalid mbi magic\n",
     "unaligned mbi\n",
+[255] =
+    "explicit panic\n",
 };
 
 void log_ok(const char *msg);
 void log_info(const char *msg);
 void log_err(const char *msg);
 int init_mbi(uint32_t magic, size_t mbi_addr);
+void halt();
+void abort();
 
 void kmain(uint32_t magic, size_t mbi_addr) {
     int err = 0;
@@ -35,6 +39,8 @@ void kmain(uint32_t magic, size_t mbi_addr) {
     init_vga();
     TRY_INIT("vga driver initializing... ", 0);
     TRY_INIT("mbi loading... ", init_mbi(magic, mbi_addr));
+
+    halt();
 }
 
 int init_mbi(uint32_t magic, size_t mbi_addr) {
@@ -57,6 +63,24 @@ int init_mbi(uint32_t magic, size_t mbi_addr) {
     }
 
     return 0;
+}
+
+__attribute__((__noreturn__))
+void halt() {
+    __asm__ __volatile__ (
+        ".hlt:  cli\n"
+        "       hlt\n"
+        "       jmp .hlt\n"
+    );
+    __builtin_unreachable();
+}
+
+__attribute__((__noreturn__))
+void abort() {
+    vga_setfg(RED);
+    vga_print("kernel panic: abort()\n");
+    vga_flush();
+    halt();
 }
 
 void log_ok(const char *msg) {

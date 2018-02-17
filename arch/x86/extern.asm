@@ -3,10 +3,10 @@
 
 bits 32
 
-global memcpy
-global memmove
-global memset
-global memcmp
+global memcpy:function (memcpy.end - memcpy)
+global memmove:function (memmove.end - memmove)
+global memset:function (memset.end - memset)
+global memcmp:function (memcmp.end - memcmp)
 
 section .text
 memcpy:
@@ -27,6 +27,7 @@ memcpy:
     pop     edi
     pop     ebp
     ret
+.end:
 
 memmove:
     push    ebp
@@ -57,6 +58,7 @@ memmove:
     pop     edi
     pop     ebp
     ret
+.end:
 
 memset:
     push    ebp
@@ -74,6 +76,7 @@ memset:
     pop     edi
     pop     ebp
     ret
+.end:
 
 memcmp:
     push    ebp
@@ -92,3 +95,4 @@ memcmp:
     pop     edi
     pop     ebp
     ret
+.end:

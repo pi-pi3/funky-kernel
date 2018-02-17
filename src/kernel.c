@@ -8,7 +8,7 @@
 
 #define TRY_INIT(msg, expr) \
     log_info(msg); \
-    if (err = (expr)) { \
+    if ((err = (expr))) { \
         log_err(err_msg[err]); \
         return; \
     } else { \

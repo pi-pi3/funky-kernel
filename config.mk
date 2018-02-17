@@ -6,11 +6,9 @@ USERSPACE:=funky
 
 SRCDIR:=src
 INCLUDE:=-Iinclude/ -I$(SRCDIR)/
-BUILD:=target/$(ARCH)-$(OS)-$(USERSPACE)
 LIBDIR:=lib
-OBJDIR:=$(BUILD)/obj
 LINKER:=linker.ld
-KERNEL:=$(BUILD)/kernel.bin
+GRUB:=grub.cfg
 
 CC:=gcc
 CXX:=g++
@@ -41,11 +39,13 @@ CFLAGS+=-Os -DNDEBUG
 CXXFLAGS+=$(CFLAGS)
 ASFLAGS+=
 LDFLAGS+=
+RELEASE:=release
 else
 CFLAGS+=-O0 -DDEBUG
 CXXFLAGS+=$(CFLAGS)
 ASFLAGS+=
 LDFLAGS+=
+RELEASE:=debug
 endif
 
 ifdef DRYRUN
@@ -53,3 +53,7 @@ RUN:=@echo
 else
 RUN:=
 endif
+
+BUILD:=target/$(RELEASE)/$(ARCH)-$(OS)-$(USERSPACE)
+OBJDIR:=$(BUILD)/obj
+KERNEL:=$(BUILD)/kernel.bin

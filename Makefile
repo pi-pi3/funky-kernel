@@ -20,27 +20,31 @@ all: $(IMAGE)
 run: $(IMAGE)
 	$(RUN) $(QEMU) -cdrom $(IMAGE)
 
-$(IMAGE): $(KERNEL)
-	$(RUN) mkdir -p $(ISO)/boot/grub
+$(IMAGE): $(BUILD) $(OBJDIR) $(ISO) $(GRUB) $(KERNEL)
 	$(RUN) cp grub.cfg $(ISO)/boot/grub/
 	$(RUN) cp $(KERNEL) $(ISO)/boot/
 	$(RUN) grub-mkrescue -o $(IMAGE) $(ISO)
 
 $(OBJDIR)/%.cpp.o: $(SRCDIR)/%.cpp
-	$(RUN) mkdir -p $(OBJDIR)
 	$(RUN) $(CXX) $(CXXLAGS) $(INCLUDE) -c -o $@ $^
 
 $(OBJDIR)/%.c.o: $(SRCDIR)/%.c
-	$(RUN) mkdir -p $(OBJDIR)
 	$(RUN) $(CC) $(CFLAGS) $(INCLUDE) -c -o $@ $^
 
 $(OBJDIR)/%.asm.o: arch/$(ARCH)/%.asm
-	$(RUN) mkdir -p $(OBJDIR)
 	$(RUN) $(AS) $(ASFLAGS) $(INCLUDE) -o $@ $^
 
-$(KERNEL): $(OBJ) $(LIB)
+$(KERNEL): $(LINKER) $(OBJ) $(LIB)
+	$(RUN) $(LD) $(LDFLAGS) -o $@ $(OBJ) $(LIB)
+
+$(BUILD):
 	$(RUN) mkdir -p $(BUILD)
-	$(RUN) $(LD) $(LDFLAGS) -o $@ $^
+
+$(OBJDIR):
+	$(RUN) mkdir -p $(OBJDIR)
+
+$(ISO):
+	$(RUN) mkdir -p $(ISO)/boot/grub
 
 clean:
 	$(RUN) rm -rf target

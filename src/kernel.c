@@ -26,8 +26,8 @@ static char *err_msg[] = {
     "explicit panic\n",
 };
 
-// a simple stack smashing guard copied from osdevb
-#if UINT32_MAX == UINTPTR_MAX
+// a simple stack smashing guard copied from osdev
+#ifdef __funky_x86
 #define STACK_CHK_GUARD 0xe2dee396
 #else
 #define STACK_CHK_GUARD 0x595e9fbd94fda766
@@ -78,8 +78,8 @@ int init_mbi(uint32_t magic, size_t mbi_addr) {
 __attribute__((__noreturn__))
 void halt() {
     __asm__ __volatile__ (
-        ".hlt:  cli\n"
-        "       hlt\n"
+        "       cli\n"
+        ".hlt:  hlt\n"
         "       jmp .hlt\n"
     );
     __builtin_unreachable();

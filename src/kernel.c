@@ -51,7 +51,8 @@ void kmain(uint32_t magic, size_t mbi_addr) {
     init_vga();
     TRY_INIT("vga driver initializing... ", 0);
     TRY_INIT("mbi loading... ", init_mbi(magic, mbi_addr));
-    TRY_INIT("divide by zero", 1/0);
+    vga_print("press any key to crash...\n");
+    vga_flush();
 
     halt();
 }

@@ -15,6 +15,8 @@ bits 32
 extern ex_vector
 ;; syscall.asm
 extern i_syscall
+;; keyboard.asm
+extern i_keyboard
 ;; pic.asm
 extern pic_eoi
 
@@ -33,7 +35,7 @@ setup_idt:
         ;; load address of the exception handler from exception vector
         lea     eax, [ex_vector + ecx * 5]
 
-        push    PRESENT | RING0 | INT_GATE_32
+        push    PRESENT | RING3 | INT_GATE_32
         push    8h
         push    eax ; function address
         push    ecx ; exception number
@@ -88,7 +90,7 @@ add_handler:
         or      eax, ebx
 
         ;; put type 0:7 into higher half 8:15
-        mov     edx, [ebp + 16]
+        mov     edx, [ebp + 20]
         and     edx, 0xff
         shl     edx, 8
 
@@ -108,21 +110,6 @@ add_handler:
         pop     ebp
         ret
 .end:
-
-i_keyboard:
-        push    eax
-        in      al, 60h ; read information from the keyboard
-
-        ;; abort on keyboard input
-        extern abort
-        call    abort
-
-        push    1h
-        call    pic_eoi
-        add     esp, 4
-
-        pop     eax
-        iretd
 
 section .bss
 align 16, resb 0

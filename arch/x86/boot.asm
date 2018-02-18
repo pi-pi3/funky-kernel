@@ -10,6 +10,7 @@ extern setup_idt
 ;; pic.asm
 extern init_pic
 extern pic_clearall
+extern pic_eoi
 
 ;; kernel.c
 extern kmain
@@ -45,6 +46,7 @@ _start:
 
         ;; clear all masks
         call    pic_clearall
+        call    pic_eoi
 
         sti
 

@@ -41,20 +41,26 @@ void log_ok(const char *msg);
 void log_info(const char *msg);
 void log_err(const char *msg);
 int init_mbi(uint32_t magic, size_t mbi_addr);
+void pause();
 void halt();
 void abort();
 void panic(unsigned int num);
 
+__attribute__((__noreturn__))
 void kmain(uint32_t magic, size_t mbi_addr) {
     int err = 0;
 
     init_vga();
-    TRY_INIT("vga driver initializing... ", 0);
+    TRY_INIT("kernel pages initialized... ", 0);
+    TRY_INIT("gdt initialized... ", 0);
+    TRY_INIT("idt initialized... ", 0);
+    TRY_INIT("pic initialized... ", 0);
+    TRY_INIT("vga driver initialized... ", 0);
     TRY_INIT("mbi loading... ", init_mbi(magic, mbi_addr));
     vga_print("press any key to crash...\n");
     vga_flush();
 
-    halt();
+    pause();
 }
 
 int init_mbi(uint32_t magic, size_t mbi_addr) {
@@ -80,11 +86,22 @@ int init_mbi(uint32_t magic, size_t mbi_addr) {
 }
 
 __attribute__((__noreturn__))
+void pause() {
+    __asm__ __volatile__ (
+        "pause.hlt:\n"
+        "   hlt\n"
+        "   jmp pause.hlt\n"
+    );
+    __builtin_unreachable();
+}
+
+__attribute__((__noreturn__))
 void halt() {
     __asm__ __volatile__ (
         "       cli\n"
-        ".hlt:  hlt\n"
-        "       jmp .hlt\n"
+        "halt.hlt:\n"
+        "   hlt\n"
+        "   jmp halt.hlt\n"
     );
     __builtin_unreachable();
 }

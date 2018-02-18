@@ -30,8 +30,8 @@ setup_gdt:
         mov     [gdt + gdt.ucode], eax
         mov     [gdt + gdt.ucode + 4], edx
 
-        mov     edx, GDT_ENTRY(600000h, 800h, 1100b, 11110010b) >> 32 ; page granularity | 32bit, present | ring = 3 | descr | r/w
-        mov     eax, GDT_ENTRY(600000h, 800h, 1100b, 11110010b) & 0xffffffff ; page granularity | 32bit, present | ring = 3 | descr | r/w
+        mov     edx, GDT_ENTRY(600000h, 0fffffh, 1100b, 11110010b) >> 32 ; page granularity | 32bit, present | ring = 3 | descr | r/w
+        mov     eax, GDT_ENTRY(600000h, 0fffffh, 1100b, 11110010b) & 0xffffffff ; page granularity | 32bit, present | ring = 3 | descr | r/w
         mov     [gdt + gdt.udata], eax
         mov     [gdt + gdt.udata + 4], edx
         ;; task state segment
@@ -71,9 +71,7 @@ setup_gdt:
         mov     word [gdt_pointer.size], gdt.size - 1
         mov     dword [gdt_pointer.offset], gdt
 
-        cli
         lgdt    [gdt_pointer]
-        sti
 
         jmp     gdt.kcode:.reload_segments
 

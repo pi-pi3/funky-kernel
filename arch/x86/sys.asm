@@ -1,6 +1,8 @@
 
 bits 32
 
+; void io_wait();
+
 ; void outb(uint16_t port, uint8_t value);
 ; void outw(uint16_t port, uint16_t value);
 ; void outd(uint16_t port, uint32_t value);
@@ -17,6 +19,8 @@ bits 32
 ; void insw(void *dst, uint16_t port, size_t num);
 ; void insd(void *dst, uint16_t port, size_t num);
 
+global io_wait:function (io_wait.end - io_wait)
+
 global outb:function (outb.end - outb)
 global outw:function (outw.end - outw)
 global outd:function (outd.end - outd)
@@ -32,6 +36,12 @@ global outsd:function (outsd.end - outsd)
 global insb:function (insb.end - insb)
 global insw:function (insw.end - insw)
 global insd:function (insd.end - insd)
+
+io_wait:
+    mov     al, 0
+    out     80h, al
+    ret
+.end:
 
 outb:
     mov     dx, [esp + 8]

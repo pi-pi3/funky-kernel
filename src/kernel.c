@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "unistd.h"
 #include "multiboot2.h"
 #include "vga.h"
 
@@ -42,6 +43,7 @@ void log_err(const char *msg);
 int init_mbi(uint32_t magic, size_t mbi_addr);
 void halt();
 void abort();
+void panic(unsigned int num);
 
 void kmain(uint32_t magic, size_t mbi_addr) {
     int err = 0;
@@ -49,6 +51,7 @@ void kmain(uint32_t magic, size_t mbi_addr) {
     init_vga();
     TRY_INIT("vga driver initializing... ", 0);
     TRY_INIT("mbi loading... ", init_mbi(magic, mbi_addr));
+    TRY_INIT("divide by zero", 1/0);
 
     halt();
 }

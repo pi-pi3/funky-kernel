@@ -97,8 +97,8 @@ static int fmti(
         ++n;
     }
 
-    while (
-            buf[--idx]
+    while ( 
+            idx--
 #ifdef NPRINTF
             && size--
 #endif
@@ -146,7 +146,7 @@ int PRINTF(
     char fch;
     int fmt = 0;
 
-    const char *digits = NULL;
+    const char *digits = digits0;
     int length = 32; // bits(dword)
     int base = 10;
     int _signed = 1;

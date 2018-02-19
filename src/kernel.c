@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 #include "unistd.h"
+#include "string.h"
 #include "multiboot2.h"
 #include "vga.h"
 
@@ -45,6 +46,7 @@ void pause();
 void halt();
 void abort();
 void panic(unsigned int num);
+void stack_trace(void *vga, int max_frames);
 
 __attribute__((__noreturn__))
 void kmain(uint32_t magic, size_t mbi_addr) {

@@ -1,3 +1,6 @@
+bits 32
+
+extern stack_trace
 
 section .text
 global ex_vector
@@ -64,6 +67,11 @@ global panic
 panic:
         mov     eax, [esp + 4]
         call    print_err
+
+        push    15
+        push    0b8000h + 160
+        call    stack_trace
+        add     esp, 8
 
         cli
 .halt:  hlt

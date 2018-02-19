@@ -9,7 +9,9 @@ extern setup_idt
 
 ;; pic.asm
 extern init_pic
+extern pic_clearmask
 extern pic_clearall
+extern pic_setall
 extern pic_eoi
 
 ;; kernel.c
@@ -44,14 +46,28 @@ _start:
         call    init_pic
         add     esp, 8
 
-        ;; clear all masks
-        call    pic_clearall
+        ;; set all masks
+        call    pic_setall
+        ;; clear keyboard mask
+        push    1
+        call    pic_clearmask
+        add     esp, 4
+        ;; acknowledge
         call    pic_eoi
 
         sti
 
         ;; global constructors
         call    _init
+
+        pop     eax
+        pop     ebx
+
+        mov     ebp, 0
+        push    ebp
+
+        push    ebx ; mbi addr
+        push    eax ; mb2 magic
 
         call    kmain
         add     esp, 8

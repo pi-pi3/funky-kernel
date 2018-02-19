@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "stdlib.h"
 #include "unistd.h"
 #include "string.h"
 #include "multiboot2.h"
@@ -125,7 +126,7 @@ void __stack_chk_fail() {
 void log_ok(const char *msg) {
     vga_push();
     vga_setfg(GREEN);
-    vga_print(msg);
+    printf(msg);
     vga_flush();
     vga_pop();
 }
@@ -133,7 +134,7 @@ void log_ok(const char *msg) {
 void log_info(const char *msg) {
     vga_push();
     vga_setfg(LIGHT_GRAY);
-    vga_print(msg);
+    printf(msg);
     vga_flush();
     vga_pop();
 }
@@ -141,7 +142,7 @@ void log_info(const char *msg) {
 void log_err(const char *msg) {
     vga_push();
     vga_setfg(RED);
-    vga_print(msg);
+    printf(msg);
     vga_flush();
     vga_pop();
 }

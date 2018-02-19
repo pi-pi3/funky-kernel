@@ -59,8 +59,6 @@ void kmain(uint32_t magic, size_t mbi_addr) {
     TRY_INIT("pic initialized... ", 0);
     TRY_INIT("vga driver initialized... ", 0);
     TRY_INIT("mbi loading... ", init_mbi(magic, mbi_addr));
-    vga_print("press any key to crash...\n");
-    vga_flush();
 
     pause();
 }

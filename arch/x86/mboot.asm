@@ -1,3 +1,4 @@
+bits 32
 
 %define MB2_MAGIC 0e85250d6h
 %define MB2_CKSUM(arch) (100000000h - (MB2_MAGIC + (arch) + header_length))

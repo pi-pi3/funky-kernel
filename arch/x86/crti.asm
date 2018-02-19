@@ -1,3 +1,4 @@
+bits 32
 
 section .init
 global _init:function

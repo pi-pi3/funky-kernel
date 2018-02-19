@@ -1,3 +1,4 @@
+bits 32
 
 %define GDT_ENTRY(base, limit, flags, access) \
         (((limit) & 00ffffh) | \

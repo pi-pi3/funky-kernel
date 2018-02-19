@@ -2,6 +2,7 @@ bits 32
 
 extern pic_eoi
 
+section .text
 global i_keyboard
 i_keyboard:
         pusha

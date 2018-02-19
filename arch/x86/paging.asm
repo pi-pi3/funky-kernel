@@ -1,3 +1,4 @@
+bits 32
 
 section .text
 global setup_paging:function (setup_paging.end - setup_paging)

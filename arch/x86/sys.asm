@@ -1,4 +1,3 @@
-
 bits 32
 
 ; void io_wait();
@@ -37,6 +36,7 @@ global insb:function (insb.end - insb)
 global insw:function (insw.end - insw)
 global insd:function (insd.end - insd)
 
+section .text
 io_wait:
     mov     al, 0
     out     80h, al

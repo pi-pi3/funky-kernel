@@ -2,7 +2,6 @@
 IMAGE:=funky.img
 ARCH?=x86
 OS:=funky
-USERSPACE:=funky
 
 SRCDIR:=src
 INCLUDE:=-Iinclude/ -I$(SRCDIR)/
@@ -56,6 +55,6 @@ else
 RUN:=
 endif
 
-BUILD:=target/$(RELEASE)/$(ARCH)-$(OS)-$(USERSPACE)
+BUILD:=target/$(RELEASE)/$(ARCH)-unknown-$(OS)
 OBJDIR:=$(BUILD)/obj
 KERNEL:=$(BUILD)/kernel.bin

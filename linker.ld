@@ -8,22 +8,22 @@ SECTIONS {
         KEEP(*(.multiboot2.*))
     }
 
-    .text : {
+    .text ALIGN(0x1000) : {
         *(.text.*)
         KEEP(*(.text.*))
     }
 
-    .rodata : {
+    .rodata ALIGN(0x1000) : {
         *(.rodata.*)
         KEEP(*(.rodata.*))
     }
 
-    .data : {
+    .data ALIGN(0x1000) : {
         *(.data.*)
         KEEP(*(.data.*))
     }
 
-    .bss : {
+    .bss ALIGN(0x1000) : {
         *(.bss.*)
         KEEP(*(.bss.*))
     }

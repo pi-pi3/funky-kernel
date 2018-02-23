@@ -29,8 +29,9 @@ $(error invalid arch \"$(ARCH)\")
 endif
 
 CFLAGS+=-D__funky_libk -D__funky_$(ARCH) -D__funky_arch=$(ARCH) \
-		-Wall -Wextra -nostdlib -ffreestanding -m$(BITS) --std=c99 \
-		-fstack-protector-strong
+		-Wall -Wextra -m$(BITS) --std=c99 -nostdlib \
+		-fno-builtin -ffreestanding -fstack-protector-strong \
+		-nostartfiles -nodefaultlibs
 CXXFLAGS+=
 ASFLAGS+=-f $(EXEFORMAT) 
 LDFLAGS+=-n -T $(LINKER) -m $(LDEMU)

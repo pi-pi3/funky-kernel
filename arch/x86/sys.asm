@@ -44,95 +44,95 @@ io_wait:
 .end:
 
 outb:
-    mov     dx, [esp + 8]
-    mov     al, [esp + 12]
+    mov     dx, [esp + 4]
+    mov     al, [esp + 8]
     out     dx, al
     ret
 .end:
 
 outw:
-    mov     dx, [esp + 8]
-    mov     ax, [esp + 12]
+    mov     dx, [esp + 4]
+    mov     ax, [esp + 8]
     out     dx, ax
     ret
 .end:
 
 outd:
-    mov     dx, [esp + 8]
-    mov     eax, [esp + 12]
+    mov     dx, [esp + 4]
+    mov     eax, [esp + 8]
     out     dx, eax
     ret
 .end:
 
 inb:
-    mov     dx, [esp + 8]
+    mov     dx, [esp + 4]
     in      al, dx
     movzx   eax, al
     ret
 .end:
 
 inw:
-    mov     dx, [esp + 8]
+    mov     dx, [esp + 4]
     in      ax, dx
     movzx   eax, ax
     ret
 .end:
 
 ind:
-    mov     dx, [esp + 8]
+    mov     dx, [esp + 4]
     in      eax, dx
     ret
 .end:
 
 outsb:
-    mov     dx, [esp + 8]
-    mov     esi, [esp + 12]
-    mov     ecx, [esp + 16]
+    mov     dx, [esp + 4]
+    mov     esi, [esp + 8]
+    mov     ecx, [esp + 12]
     cld
     rep outsb
     ret
 .end:
 
 outsw:
-    mov     dx, [esp + 8]
-    mov     esi, [esp + 12]
-    mov     ecx, [esp + 16]
+    mov     dx, [esp + 4]
+    mov     esi, [esp + 8]
+    mov     ecx, [esp + 12]
     cld
     rep outsw
     ret
 .end:
 
 outsd:
-    mov     dx, [esp + 8]
-    mov     esi, [esp + 12]
-    mov     ecx, [esp + 16]
+    mov     dx, [esp + 4]
+    mov     esi, [esp + 8]
+    mov     ecx, [esp + 12]
     cld
     rep outsd
     ret
 .end:
 
 insb:
-    mov     edi, [esp + 8]
-    mov     dx, [esp + 12]
-    mov     ecx, [esp + 16]
+    mov     edi, [esp + 4]
+    mov     dx, [esp + 8]
+    mov     ecx, [esp + 12]
     cld
     rep insb
     ret
 .end:
 
 insw:
-    mov     edi, [esp + 8]
-    mov     dx, [esp + 12]
-    mov     ecx, [esp + 16]
+    mov     edi, [esp + 4]
+    mov     dx, [esp + 8]
+    mov     ecx, [esp + 12]
     cld
     rep insw
     ret
 .end:
 
 insd:
-    mov     edi, [esp + 8]
-    mov     dx, [esp + 12]
-    mov     ecx, [esp + 16]
+    mov     edi, [esp + 4]
+    mov     dx, [esp + 8]
+    mov     ecx, [esp + 12]
     cld
     rep insd
     ret

@@ -22,7 +22,7 @@ syscall:
 ;; the return value is returned in eax
 global i_syscall:function (i_syscall.end - i_syscall)
 i_syscall:
-        pusha
-        popa
+        pushad
+        popad
         iretd
 .end:

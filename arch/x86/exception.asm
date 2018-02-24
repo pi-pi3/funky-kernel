@@ -79,10 +79,10 @@ panic:
 
 %macro ex_handler 2
 %1:
-        pusha
+        pushad
         push    %2
         call    panic
-        popa
+        popad
         iretd
 %endmacro
 

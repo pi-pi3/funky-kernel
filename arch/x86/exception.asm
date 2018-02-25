@@ -65,7 +65,10 @@ print_err:
 
 global panic
 panic:
-        mov     eax, [esp + 4]
+        push    ebp
+        mov     ebp, esp
+
+        mov     eax, [esp + 8]
         call    print_err
 
         push    15
@@ -77,35 +80,67 @@ panic:
 .halt:  hlt
         jmp     .halt
 
-%macro ex_handler 2
-%1:
+        ; pop   ebp
+        ; ret
+
+%macro ex_handler_code 1
+ex_%1:
+        push    dword [esp + 4]
+
+        push    ebp
+        mov     ebp, esp
+
         pushad
-        push    %2
+        push    %1
         call    panic
+        add     esp, 4
         popad
+
+        pop     ebp
+
+        add     esp, 4
         iretd
 %endmacro
 
-ex_handler  ex_00h, 00h
-ex_handler  ex_01h, 01h
-ex_handler  ex_03h, 03h
-ex_handler  ex_04h, 04h
-ex_handler  ex_05h, 05h
-ex_handler  ex_06h, 06h
-ex_handler  ex_07h, 07h
-ex_handler  ex_08h, 08h
-ex_handler  ex_0ah, 0ah
-ex_handler  ex_0bh, 0bh
-ex_handler  ex_0ch, 0ch
-ex_handler  ex_0dh, 0dh
-ex_handler  ex_0eh, 0eh
-ex_handler  ex_10h, 10h
-ex_handler  ex_11h, 11h
-ex_handler  ex_12h, 12h
-ex_handler  ex_13h, 13h
-ex_handler  ex_14h, 14h
-ex_handler  ex_1eh, 1eh
-ex_handler  ex_1fh, 1fh
+%macro ex_handler_no_code 1
+ex_%1:
+        push    dword [esp]
+
+        push    ebp
+        mov     ebp, esp
+
+        pushad
+        push    %1
+        call    panic
+        add     esp, 4
+        popad
+
+        pop     ebp
+
+        add     esp, 4
+        iretd
+%endmacro
+
+ex_handler_no_code  00h
+ex_handler_no_code  01h
+ex_handler_no_code  03h
+ex_handler_no_code  04h
+ex_handler_no_code  05h
+ex_handler_no_code  06h
+ex_handler_no_code  07h
+ex_handler_code  08h
+ex_handler_code  0ah
+ex_handler_code  0bh
+ex_handler_code  0ch
+ex_handler_code  0dh
+ex_handler_code  0eh
+ex_handler_no_code  10h
+ex_handler_code  11h
+ex_handler_no_code  12h
+ex_handler_no_code  13h
+ex_handler_no_code  14h
+ex_handler_code  1eh
+ex_handler_no_code  1fh
 
 section .data
 panic_msg:  db  'kernel panic: ',0

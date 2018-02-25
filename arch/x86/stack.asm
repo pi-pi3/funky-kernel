@@ -93,4 +93,4 @@ nprinte:
 
 section .data
 trace0:     db  'stack trace:',0
-trace_fmt:  db  '  at 0x%x',0
+trace_fmt:  db  '  at 0x%08x',0

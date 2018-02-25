@@ -2,6 +2,7 @@ bits 32
 
 ;; paging.asm
 extern setup_paging
+extern unmap_id
 ;; gdt.asm
 extern setup_gdt
 ;; idt.asm
@@ -21,20 +22,23 @@ extern _init
 
 section .text
 global _start:function (_start.end - _start)
+global _start.higher_half
 _start:
+        cli
+        ;; this maps the first virtual 4MiB to physical first 4MiB
+        ;; and maps the last pde to the pde itself
+        jmp     setup_paging
+
+.higher_half:
         ;; setup a 16kiB stack
         mov     esp, stack_end
 
         push    ebx ; mbi addr
         push    eax ; mb2 magic
 
-        cli
-        ;; this maps the first virtual 4MiB to physical first 4MiB
-        ;; and maps the last pde to the pde itself
-        call    setup_paging
+        call    unmap_id
 
-        ;; sets up a useful gdt
-        ;; see below in setup_gdt and .bss
+        ;; sets up gdt
         call    setup_gdt
 
         ;; sets up idt and isr
@@ -62,6 +66,7 @@ _start:
 
         pop     eax
         pop     ebx
+        add     ebx, 0xe0000000 ; higher half offset
 
         mov     ebp, 0
         push    ebp
@@ -81,4 +86,5 @@ section .bss
 align 16, resb 0
 stack_bottom:
             resb    16384
+
 stack_end:

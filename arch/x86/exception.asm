@@ -52,7 +52,7 @@ print:
 print_err:
         push    eax
 
-        mov     edi, 0b8000h ; vga
+        mov     edi, 0e00b8000h ; vga
         mov     esi, panic_msg
         call    print
 
@@ -72,7 +72,7 @@ panic:
         call    print_err
 
         push    15
-        push    0b8000h + 160
+        push    0e00b8000h + 160
         call    stack_trace
         add     esp, 8
 

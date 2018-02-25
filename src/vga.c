@@ -80,7 +80,7 @@ static void linefeed() {
 }
 
 void init_vga() {
-    vga = (void*) 0xb8000;
+    vga = (void*) 0xe00b8000;
     color_sp = 0;
     vga_setbg(BG_DEFAULT);
     vga_setfg(FG_DEFAULT);

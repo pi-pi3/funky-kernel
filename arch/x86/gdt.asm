@@ -12,29 +12,29 @@ section .text
 global setup_gdt:function (setup_gdt.end - setup_gdt)
 setup_gdt:
         ;; null entry
-        mov     dword [gdt + gdt.null], 0
-        mov     dword [gdt + gdt.null + 4], 0
+        mov     dword [gdt.null], 0
+        mov     dword [gdt.null + 4], 0
         ;; kernel segments
-        mov     edx, GDT_ENTRY(0h, 400h, 1100b, 10011010b) >> 32 ; page granularity | 32bit, present | descr | executable | r/w
-        mov     eax, GDT_ENTRY(0h, 400h, 1100b, 10011010b) & 0xffffffff ; page granularity | 32bit, present | descr | executable | r/w
-        mov     [gdt + gdt.kcode], eax
-        mov     [gdt + gdt.kcode + 4], edx
+        mov     edx, GDT_ENTRY(0h, 0fffffh, 1100b, 10011010b) >> 32 ; page granularity | 32bit, present | descr | executable | r/w
+        mov     eax, GDT_ENTRY(0h, 0fffffh, 1100b, 10011010b) & 0xffffffff ; page granularity | 32bit, present | descr | executable | r/w
+        mov     [gdt.kcode], eax
+        mov     [gdt.kcode + 4], edx
 
-        mov     edx, GDT_ENTRY(0h, 400h, 1100b, 10010010b) >> 32 ; page granularity | 32bit, present | descr | r/w
-        mov     eax, GDT_ENTRY(0h, 400h, 1100b, 10010010b) & 0xffffffff ; page granularity | 32bit, present | descr | r/w
-        mov     [gdt + gdt.kdata], eax
-        mov     [gdt + gdt.kdata + 4], edx
+        mov     edx, GDT_ENTRY(0h, 0fffffh, 1100b, 10010010b) >> 32 ; page granularity | 32bit, present | descr | r/w
+        mov     eax, GDT_ENTRY(0h, 0fffffh, 1100b, 10010010b) & 0xffffffff ; page granularity | 32bit, present | descr | r/w
+        mov     [gdt.kdata], eax
+        mov     [gdt.kdata + 4], edx
 
         ;; userspace segments
-        mov     edx, GDT_ENTRY(400000h, 600h, 1100b, 11111010b) >> 32 ; page granularity | 32bit, present | ring = 3 | descr | executable | r/w
-        mov     eax, GDT_ENTRY(400000h, 600h, 1100b, 11111010b) & 0xffffffff ; page granularity | 32bit, present | ring = 3 | descr | executable | r/w
-        mov     [gdt + gdt.ucode], eax
-        mov     [gdt + gdt.ucode + 4], edx
+        mov     edx, GDT_ENTRY(0h, 0dffffh, 1100b, 11111010b) >> 32 ; page granularity | 32bit, present | ring = 3 | descr | executable | r/w
+        mov     eax, GDT_ENTRY(0h, 0dffffh, 1100b, 11111010b) & 0xffffffff ; page granularity | 32bit, present | ring = 3 | descr | executable | r/w
+        mov     [gdt.ucode], eax
+        mov     [gdt.ucode + 4], edx
 
-        mov     edx, GDT_ENTRY(600000h, 0fffffh, 1100b, 11110010b) >> 32 ; page granularity | 32bit, present | ring = 3 | descr | r/w
-        mov     eax, GDT_ENTRY(600000h, 0fffffh, 1100b, 11110010b) & 0xffffffff ; page granularity | 32bit, present | ring = 3 | descr | r/w
-        mov     [gdt + gdt.udata], eax
-        mov     [gdt + gdt.udata + 4], edx
+        mov     edx, GDT_ENTRY(0h, 0dffffh, 1100b, 11110010b) >> 32 ; page granularity | 32bit, present | ring = 3 | descr | r/w
+        mov     eax, GDT_ENTRY(0h, 0dffffh, 1100b, 11110010b) & 0xffffffff ; page granularity | 32bit, present | ring = 3 | descr | r/w
+        mov     [gdt.udata], eax
+        mov     [gdt.udata + 4], edx
         ;; task state segment
         ;; higher half of tss entry
         mov     edx, GDT_ENTRY(0, 0, 0100b, 10011001b) >> 32 ; 32bit, present | executable | accessed
@@ -66,18 +66,18 @@ setup_gdt:
         and     eax, 0xff
         or      eax, ebx
         ;; little endian: store low half first
-        mov     [gdt + gdt.tss], eax
-        mov     [gdt + gdt.tss + 4], edx
+        mov     [gdt.tss], eax
+        mov     [gdt.tss + 4], edx
 
         mov     word [gdt_pointer.size], gdt.size - 1
         mov     dword [gdt_pointer.offset], gdt
 
         lgdt    [gdt_pointer]
 
-        jmp     gdt.kcode:.reload_segments
+        jmp     8h:.reload_segments
 
 .reload_segments:
-        mov     ax, gdt.kdata
+        mov     ax, 10h
         mov     ds, ax
         mov     es, ax
         mov     fs, ax
@@ -95,21 +95,15 @@ gdt_pointer:
 align 16, resb 0
 gdt:
 ;; inaccessible null segment
-.null       equ     ($ - gdt)
-            resq    1
+.null       resq    1
 ;; kernel segments
-.kcode      equ     ($ - gdt)
-            resq    1
-.kdata      equ     ($ - gdt)
-            resq    1
+.kcode      resq    1
+.kdata      resq    1
 ;; userspace segments
-.ucode      equ     ($ - gdt)
-            resq    1
-.udata      equ     ($ - gdt)
-            resq    1
+.ucode      resq    1
+.udata      resq    1
 ;; task state segment
-.tss        equ     ($ - gdt)
-            resq    1
+.tss        resq    1
 .size       equ     ($ - gdt)
 
 ;; task state segment

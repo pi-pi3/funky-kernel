@@ -64,7 +64,7 @@ static int fmti(
     }
 
     // pad
-    for (int c = 0; c < (fill_num - idx - n - sign); c++) {
+    for (int c = 0; c < (fill_num - idx - sign); c++) {
 #ifdef NPRINTF
         if (!size) {
             break;

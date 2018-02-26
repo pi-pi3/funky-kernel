@@ -20,6 +20,9 @@ extern kmain
 ;; crt*.c
 extern _init
 
+extern kernel_end
+extern kernel_start
+
 section .text
 global _start:function (_start.end - _start)
 global _start.higher_half
@@ -32,6 +35,9 @@ _start:
 .higher_half:
         ;; setup a 16kiB stack
         mov     esp, stack_end
+
+        mov     ebp, 0
+        push    ebp
 
         push    ebx ; mbi addr
         push    eax ; mb2 magic
@@ -68,23 +74,23 @@ _start:
         pop     ebx
         add     ebx, 0xe0000000 ; higher half offset
 
-        mov     ebp, 0
-        push    ebp
-
+        push    kernel_end
+        push    kernel_start
         push    ebx ; mbi addr
         push    eax ; mb2 magic
 
         call    kmain
-        add     esp, 8
+        add     esp, 16
 
         cli
 .hang:  hlt
         jmp     .hang
+
+        pop     ebp
 .end:
 
 section .bss
 align 16, resb 0
 stack_bottom:
             resb    16384
-
 stack_end:

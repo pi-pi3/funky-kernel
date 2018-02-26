@@ -29,44 +29,42 @@ static char *err_msg[] = {
     "explicit panic\n",
 };
 
-// a simple stack smashing guard copied from osdev
-#ifdef __funky_x86
-#define STACK_CHK_GUARD 0xe2dee396
-#else
-#define STACK_CHK_GUARD 0x595e9fbd94fda766
-#endif
-
-static volatile uintptr_t __stack_chk_guard = STACK_CHK_GUARD;
-void __stack_chk_fail(); 
+typedef struct {
+    size_t kernel_start;
+    size_t kernel_end;
+    size_t heap_start;
+    size_t heap_end;
+} kernel_info;
 
 void log_ok(const char *msg);
 void log_info(const char *msg);
 void log_err(const char *msg);
-int init_mbi(uint32_t magic, size_t mbi_addr);
+int init_kernel(kernel_info *kinfo, uint32_t magic, size_t mbi_addr);
 void pause();
 void halt();
 void abort();
 void panic(unsigned int num);
-void stack_trace(void *vga, int max_frames);
 
 __attribute__((__noreturn__))
-void kmain(uint32_t magic, size_t mbi_addr) {
+void kmain(uint32_t magic, size_t mbi_addr, size_t kernel_start, size_t kernel_end) {
     int err = 0;
+    kernel_info kinfo;
+    kinfo.kernel_start = kernel_start;
+    kinfo.kernel_end = kernel_end;
 
     init_vga();
     TRY_INIT("kernel pages initialized... ", 0);
     TRY_INIT("gdt initialized... ", 0);
     TRY_INIT("idt initialized... ", 0);
     TRY_INIT("pic initialized... ", 0);
-    TRY_INIT("stack frame linked list setup... ", 0);
     TRY_INIT("entering kmain... ", 0);
     TRY_INIT("vga driver initialized... ", 0);
-    TRY_INIT("mbi loading... ", init_mbi(magic, mbi_addr));
+    TRY_INIT("mbi loading... ", init_kernel(&kinfo, magic, mbi_addr));
 
     pause();
 }
 
-int init_mbi(uint32_t magic, size_t mbi_addr) {
+int init_kernel(kernel_info *kinfo, uint32_t magic, size_t mbi_addr) {
     if (magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
         return ERR_INVALID_MBI_MAGIC;
     }
@@ -79,7 +77,6 @@ int init_mbi(uint32_t magic, size_t mbi_addr) {
     while (tag->type != MULTIBOOT_TAG_TYPE_END) {
         // we don't actually do anything with the multiboot tags
         // but if we did, the code would go here:
-        /* ... */
 
         size_t padded_size = ((tag->size + 7) & ~7);
         tag = (void *) ((void *) tag + padded_size);
@@ -101,7 +98,7 @@ void pause() {
 __attribute__((__noreturn__))
 void halt() {
     __asm__ __volatile__ (
-        "       cli\n"
+        "   cli\n"
         "halt.hlt:\n"
         "   hlt\n"
         "   jmp halt.hlt\n"
@@ -113,14 +110,6 @@ __attribute__((__noreturn__))
 void abort() {
     vga_setfg(RED);
     vga_print("kernel panic: abort()\n");
-    vga_flush();
-    halt();
-}
-
-__attribute__((__noreturn__))
-void __stack_chk_fail() {
-    vga_setfg(RED);
-    log_err("kernel panic: stack smashed\n");
     vga_flush();
     halt();
 }

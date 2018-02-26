@@ -9,7 +9,7 @@ struct heap_s {
     hole_list holes;
 };
 
-static heap_t heap = {0};
+heap_t heap = {0};
 
 void *malloc(size_t size) {
     if (size == 0) {

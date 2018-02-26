@@ -217,7 +217,7 @@ int PRINTF(
                 _signed = 0;
                 digits = digits0;
                 base = 8;
-            } else if ((fch == 'd') | (fch == 'i')) {
+            } else if ((fch == 'd') || (fch == 'i')) {
                 _signed = 1;
                 digits = digits0;
                 base = 10;
@@ -233,7 +233,7 @@ int PRINTF(
                 return -fch;
             }
 
-            if ((fch == 'u') | (fch == 'o') | (fch == 'd') | (fch == 'i') | (fch == 'x') | (fch == 'X')) {
+            if ((fch == 'u') || (fch == 'o') || (fch == 'd') || (fch == 'i') || (fch == 'x') || (fch == 'X')) {
                 ARG(int, i);
                 // i = i & ((1 << length) - 1); TODO: length
                 int n_ = fmti(

@@ -19,7 +19,7 @@ void *hole_alloc(hole_list *holes, size_t *size_ptr, size_t align) {
     size = align_up(size, align);
 
     hole_t *prev = holes;
-    hole_t *hole = hole->next;
+    hole_t *hole = holes->next;
     for (; hole != NULL; hole = hole->next) {
         if ((hole->size >= size &&
             (hole->size - size) < HOLE_MIN_SIZE)) {

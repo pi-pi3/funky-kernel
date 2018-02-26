@@ -37,12 +37,12 @@ static int fmti(
         i = -i;
     }
 
-    while (i) {
+    do {
         int digit = i % base;
         i = i / base;
         buf[idx] = digits[digit];
         ++idx;
-    }
+    } while (i);
 
     if (fill == '0') {
         if (

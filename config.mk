@@ -30,7 +30,7 @@ endif
 
 CFLAGS+=-D__funky_libk -D__funky_$(ARCH) -D__funky_arch=$(ARCH) \
 		-Wall -Wextra -m$(BITS) --std=c99 -nostdlib \
-		-fno-builtin -ffreestanding -fstack-protector-strong \
+		-fno-builtin -ffreestanding -fno-stack-protector \
 		-nostartfiles -nodefaultlibs
 CXXFLAGS+=
 ASFLAGS+=-f $(EXEFORMAT) 

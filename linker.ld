@@ -3,6 +3,8 @@ ENTRY(_start)
 SECTIONS {
     . = 0xe0100000;
 
+    kernel_start = .;
+
     .boot : AT(ADDR(.boot) - 0xe0000000) {
         *(.multiboot2.*)
         KEEP(*(.multiboot2.*))
@@ -28,4 +30,6 @@ SECTIONS {
         *(.bss.*)
         KEEP(*(.bss.*))
     }
+
+    kernel_end = .;
 }

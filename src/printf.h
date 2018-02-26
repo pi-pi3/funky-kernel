@@ -244,6 +244,13 @@ int PRINTF(
                         size,
 #endif
                         fill_num, fill, base, _signed, digits, i);
+                length = 32;
+                fill_num = 0;
+                fill = ' ';
+                base = 10;
+                _signed = 1;
+                digits = digits0;
+                i = 0;
                 n += n_;
 #ifdef SPRINTF
                 str += n_;

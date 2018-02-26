@@ -68,7 +68,7 @@ panic:
         push    ebp
         mov     ebp, esp
 
-        mov     eax, [esp + 8]
+        mov     eax, [ebp + 8]
         call    print_err
 
         push    15

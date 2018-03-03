@@ -1,8 +1,7 @@
 
+#include "mem.h"
 #include "holes.h"
 
-static size_t align_down(const size_t n, const size_t align);
-static size_t align_up(const size_t n, const size_t align);
 static int hole_merge(hole_t *hole);
 
 void holes_init(hole_list *holes, size_t addr, size_t size) {
@@ -74,14 +73,6 @@ void hole_dealloc(hole_list *holes, void *ptr, size_t size) {
     }
 
     hole_merge(hole); // merge the newly created hole with the next hole
-}
-
-static size_t align_down(const size_t n, const size_t align) {
-    return n & ~(align - 1);
-}
-
-static size_t align_up(const size_t n, const size_t align) {
-    return align_down(n + align - 1, align);
 }
 
 static int hole_merge(hole_t *hole) {
